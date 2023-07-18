@@ -248,7 +248,8 @@ func (BitCurve *BitCurve) doubleJacobian(x, y, z *big.Int) (*big.Int, *big.Int, 
 // ScalarBaseMult returns k*G, where G is the base point of the group and k is
 // an integer in big-endian form.
 func (BitCurve *BitCurve) ScalarBaseMult(k []byte) (*big.Int, *big.Int) {
-	return BitCurve.ScalarMult(BitCurve.Gx, BitCurve.Gy, k)
+	panic("not support")
+	// return BitCurve.ScalarMult(BitCurve.Gx, BitCurve.Gy, k)
 }
 
 // Marshal converts a point into the form specified in section 4.3.6 of ANSI
