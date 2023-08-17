@@ -330,8 +330,32 @@ func (a *Address) UnmarshalText(input []byte) error {
 	return hexutil.UnmarshalFixedText("Address", input, a[:])
 }
 
+type parseFilecoinAddressFunc func(input []byte) (Address, error)
+
+var ParseFilecoinAddressToEthAddress parseFilecoinAddressFunc
+
+func isFilecoinAddress(input []byte) bool {
+	if len(input) < 2 {
+		return false
+	}
+	// "\"t010001\"" or "\"f010001\""
+	if input[1] == 't' || input[1] == 'f' {
+		return true
+	}
+
+	return false
+}
+
 // UnmarshalJSON parses a hash in hex syntax.
 func (a *Address) UnmarshalJSON(input []byte) error {
+	if isFilecoinAddress(input) && ParseFilecoinAddressToEthAddress != nil {
+		addr, err := ParseFilecoinAddressToEthAddress(input)
+		if err != nil {
+			return fmt.Errorf("parse %s to eth address failed: %v", string(input), err)
+		}
+		*a = addr
+		return nil
+	}
 	return hexutil.UnmarshalFixedJSON(addressT, input, a[:])
 }
 
